@@ -1,4 +1,4 @@
-```java
+```
 class Solution {
     public List<String> generateAbbreviations(String word) {
         List<String> ans = new ArrayList<>();
