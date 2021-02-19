@@ -1,4 +1,3 @@
-```
 class Solution {
     public List<String> generateAbbreviations(String word) {
         List<String> ans = new ArrayList<>();
@@ -28,4 +27,3 @@ class Solution {
         sb.setLength(len); // reset builder to the original state
     }
 }
-```
