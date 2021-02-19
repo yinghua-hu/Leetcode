@@ -1,0 +1,29 @@
+class Solution {
+    public List<String> generateAbbreviations(String word) {
+        List<String> ans = new ArrayList<>();
+        dfs(ans, new StringBuilder(), word, 0, 0);
+        return ans;
+    }
+    // i is the current position
+    // k is the count of consecutive abbreviated characters
+    private void dfs(List<String> ans, StringBuilder sb, String word, int i, int k) {
+        int len = sb.length(); // keep the length of builder
+        if (i == word.length()) {
+            if (k > 0) {
+                sb.append(k); // append the last k if non zero
+            }
+            ans.add(sb.toString());
+        }
+        else {
+            // the branch that word.charAt(i) is abbreviated
+            dfs(ans, sb, word, i + 1, k + 1);
+            // the branch that word.charAt(i) is kept
+            if (k > 0) {
+                sb.append(k);                
+            }
+            sb.append(word.charAt(i));
+            dfs(ans, sb, word, i + 1, 0);
+        }
+        sb.setLength(len); // reset builder to the original state
+    }
+}
