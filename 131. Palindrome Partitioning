@@ -1,0 +1,46 @@
+class Solution {
+    boolean[][] grid;
+    List<List<String>> ans;
+    int n;
+    private boolean[][] getPalinMatrix(String s) {
+        n = s.length();
+        boolean[][] m = new boolean[n][n];
+        char[] c = s.toCharArray();
+        for (int i = 0; i < n; i++) {
+            m[i][i] = true;
+            if (i < n - 1 && c[i] == c[i + 1]) {
+                m[i][i + 1] = true;
+            }
+        }
+        for (int l = 3; l <= n; l++) {
+            for(int i = 0, j = i + l - 1; j < n; i++, j++) {
+                if (c[i] == c[j] && j - 1 >= 0 && i + 1 < n) {
+                    m[i][j] = m[i + 1][j - 1];
+                }
+            }
+        }        
+        return m;        
+    }
+    
+    public List<List<String>> partition(String s) {
+        grid = getPalinMatrix(s);
+        ans = new ArrayList<>();
+        dfs(0, new ArrayList<>(), s);
+        return ans;
+    }
+    
+    private void dfs(int start, List<String> tokens, String s) {
+        if (start == n) {
+            ans.add(new ArrayList<>(tokens));
+            return;
+        }
+        for (int i = start; i < n; i++) {
+            if (!grid[start][i]) {
+                continue;
+            }
+            tokens.add(s.substring(start, i + 1));
+            dfs(i + 1, tokens, s);
+            tokens.remove(tokens.size() - 1);
+        }
+    }
+}
