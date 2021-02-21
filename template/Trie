@@ -1,4 +1,4 @@
-class TrieNode {
+private class TrieNode {
 
     // R links to node children
     private TrieNode[] links;
@@ -28,7 +28,7 @@ class TrieNode {
     }
 }
 
-class Trie {
+private class Trie {
     private TrieNode root;
 
     public Trie() {
