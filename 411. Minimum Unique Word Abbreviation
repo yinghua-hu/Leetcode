@@ -1,0 +1,83 @@
+class Solution {    
+    int n;
+    public String minAbbreviation(String target, String[] dictionary) {
+        char[] s = target.toCharArray();
+        n = s.length;
+        List<Pair<Integer,String>> abbrs = new ArrayList<>();
+        List<String> dict = new ArrayList<>();
+        for (String word : dictionary) {
+            if (word.length() == n) {
+                dict.add(word);
+            }
+        }
+        if (dict.size() == 0) {
+            return String.valueOf(n);
+        }
+        dfs(abbrs, s, new StringBuilder(), 0, 0, 0);
+        Collections.sort(abbrs, (a,b) -> a.getKey() - b.getKey());
+        for (int i = 0; i < abbrs.size(); i++) {
+            String ab = abbrs.get(i).getValue();
+            boolean flag = false;
+            for (String word : dict) {
+                if (validWordAbbreviation(word, ab)) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                return ab;
+            }
+        }        
+        return "";
+    }
+    public boolean validWordAbbreviation(String word, String abbr) {
+        char[] s1 = word.toCharArray();
+        char[] s2 = abbr.toCharArray();
+        int i = 0;
+        int j = 0;
+        while (i < s1.length && j < s2.length) {
+            if (Character.isDigit(s2[j])) {
+                if (s2[j] == '0') {
+                    return false;
+                }
+                int val = 0;
+                while (j < s2.length && Character.isDigit(s2[j])) {
+                    val = val * 10 + (s2[j] - '0');
+                    j++;
+                }
+                i += val;  
+            }
+            else {
+                if (s1[i] != s2[j]) {
+                    return false;
+                }
+                i++;
+                j++;
+            }
+        }
+        return i == s1.length && j == s2.length;
+    }
+    private void dfs(List<Pair<Integer,String>> abbrs, char[] s, StringBuilder sb, int i, int k, int l) {
+        int len = sb.length(); 
+        int old = l;
+        if (i == s.length) {
+            if (k > 0) {
+                sb.append(k);
+                l++;
+            }
+            abbrs.add(new Pair(l, sb.toString()));            
+        }
+        else {
+            dfs(abbrs, s, sb, i + 1, k + 1, l);
+            if (k > 0) {
+                sb.append(k);
+                l++;
+            }
+            sb.append(s[i]);
+            l++;
+            dfs(abbrs, s, sb, i + 1, 0, l);
+        }                
+        sb.setLength(len);
+        l = old;
+    }
+}
