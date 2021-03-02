@@ -1,0 +1,62 @@
+class Solution {
+    
+    class TrieNode {
+        TrieNode[] next;
+        TrieNode() {
+            next = new TrieNode[2];
+            next[0] = null;
+            next[1] = null;
+        }
+    }
+    
+    public int[] maximizeXor(int[] nums, int[][] queries) {
+        int n = queries.length;
+        int[][] q = new int[n][3];
+        for (int i = 0; i < n; i++) {
+            q[i][0] = queries[i][0];
+            q[i][1] = queries[i][1];
+            q[i][2] = i;
+        }
+        Arrays.sort(nums);
+        Arrays.sort(q, (a,b) -> a[1] - b[1]);
+        int[] ans = new int[n];
+        int i = 0;        
+        TrieNode root = new TrieNode();
+        for (int j = 0; j < n; j++) {
+            int m = q[j][1];
+            int x = q[j][0];
+            while (i < nums.length && nums[i] <= m) {
+                int cur = nums[i];
+                TrieNode node = root;
+                for (int t = 31; t >= 0; t--) {
+                    int bit = ((nums[i] >> t) & 1);
+                    if (node.next[bit] == null) {
+                        node.next[bit] = new TrieNode();
+                    }
+                    node = node.next[bit];
+                }
+                i++;
+            }
+            if (i == 0) {
+                ans[q[j][2]] = -1;
+                continue;
+            }
+            int ret = 0;
+            TrieNode node = root;
+            for (int t = 31; t >= 0; t--) {
+                int bit = (1 & (x >> t));
+                if (node.next[1 - bit] != null) {
+                    node = node.next[1 - bit];
+                    ret = (ret << 1) + 1;
+                }
+                else {
+                    node = node.next[bit];
+                    ret <<= 1;
+                }
+            }
+            ans[q[j][2]] = ret;            
+        }
+        
+        return ans;
+    }
+}
