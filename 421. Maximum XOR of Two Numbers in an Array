@@ -1,0 +1,40 @@
+class Solution {
+    class TrieNode {
+        TrieNode[] next;
+        TrieNode() {
+            next = new TrieNode[2];
+            next[0] = null;
+            next[1] = null;
+        }
+        
+    }
+    public int findMaximumXOR(int[] nums) {
+        TrieNode root = new TrieNode();
+        for (int num : nums) {
+            TrieNode node = root;
+            for (int i = 31; i >= 0; i--) {
+                if (node.next[(num >> i) & 1] == null) {
+                    node.next[(num >> i) & 1] = new TrieNode();
+                }
+                node = node.next[(num >> i) & 1];
+            }
+        }
+        int ret = 0;
+        for (int num : nums) {
+            int ans = 0;
+            TrieNode node = root;
+            for (int i = 31; i >= 0; i--) {
+                if (node.next[1 - ((num >> i) & 1)] != null) {
+                    node = node.next[1 - ((num >> i) & 1)];
+                    ans = (ans << 1) + 1;
+                }
+                else {
+                    node = node.next[(num >> i) & 1];
+                    ans <<= 1;
+                }
+            }
+            ret = Math.max(ret, ans);
+        }
+        return ret;
+    }
+}
