@@ -1,0 +1,89 @@
+class WordFilter {
+    
+    TrieNode root;
+    
+    class TrieNode {
+        TrieNode[] next;
+        int index;
+        TrieNode() {
+            next = new TrieNode[27];
+            index = -1;
+        }        
+    }
+    
+    public void insertWord(String word, int index, TrieNode root) {
+        char[] s = word.toCharArray();
+        TrieNode node = root;
+        boolean flag = false;
+        for (int i = 0; i < s.length; i++) {
+            if (s[i] == '_') {
+                if (node.next[26] == null) {
+                    node.next[26] = new TrieNode();
+                }
+                node = node.next[26];
+                flag = true;
+            }
+            else {
+                if (node.next[s[i] - 'a'] == null) {
+                    node.next[s[i] - 'a'] = new TrieNode();
+                }
+                node = node.next[s[i] - 'a'];
+            }
+            if (flag) {
+                node.index = index;        
+            }
+        }
+    }
+    
+    public void insert(String word, int index, TrieNode root) {
+        char[] s = word.toCharArray();
+        int n = s.length;
+        for (int i = 0; i < n; i++) {
+            String w = word.substring(i) + "_" + word;
+            insertWord(w, index, root);
+        }
+    }
+    
+    public int search(String word, TrieNode root) {
+        char[] s = word.toCharArray();
+        TrieNode node = root;
+        for (int i = 0; i < s.length; i++) {
+            if (s[i] == '_') {
+                if (node.next[26] == null) {
+                    return -1;
+                }
+                else {
+                    node = node.next[26];   
+                }                
+            }
+            else {
+                if (node.next[s[i] - 'a'] == null) {
+                    return -1;
+                }
+                else {
+                    node = node.next[s[i] - 'a'];    
+                }                
+            }
+        }
+        return node.index;
+    }
+    
+    public WordFilter(String[] words) {
+        root = new TrieNode();
+        int index = 0;
+        for (String word : words) {            
+            insert(word, index, root);
+            index++;
+        }
+    }
+    
+    public int f(String prefix, String suffix) {
+        return search(suffix + "_" + prefix, root);
+    }
+}
+
+/**
+ * Your WordFilter object will be instantiated and called as such:
+ * WordFilter obj = new WordFilter(words);
+ * int param_1 = obj.f(prefix,suffix);
+ */
