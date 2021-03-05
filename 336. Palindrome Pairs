@@ -1,0 +1,65 @@
+class Solution {
+    public List<List<Integer>> palindromePairs(String[] words) {
+        Map<String, Integer> map = new HashMap<>();
+        Set<String> set = new HashSet<>();
+        int n = words.length;
+        for (int i = 0; i < n; i++) {
+            map.put(words[i], i);
+        }
+        Arrays.sort(words, (a, b) -> a.length() - b.length());
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            String word = words[i];
+            for (int j = 0; j <= word.length(); j++) {
+                if (isPalin(word, 0, j - 1)) {
+                    String r = reverse(word, j, n - 1);
+                    if (set.contains(r)) {
+                        List<Integer> list = new ArrayList<>();
+                        list.add(map.get(r));
+                        list.add(map.get(word));
+                        ans.add(list);
+                    }    
+                }
+                if (isPalin(word, j, word.length() - 1)) {
+                    String r = reverse(word, 0, j - 1);
+                    if (set.contains(r)) {
+                        List<Integer> list = new ArrayList<>();
+                        list.add(map.get(word));
+                        list.add(map.get(r));
+                        ans.add(list);
+                    }
+                }
+            }            
+            set.add(word);
+        }
+        return ans;
+    }
+    
+    public boolean isPalin(String word, int i, int j) {
+        char[] s = word.toCharArray();
+        while (i < j) {
+            if (s[i] == s[j]) {
+                i++;
+                j--;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public String reverse(String word, int start, int end) {
+        start = Math.max(start, 0);
+        end = Math.min(end, word.length() - 1);
+        if (start > end) {
+            return "";
+        }
+        char[] s = word.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (int i = end; i >= start; i--) {
+            sb.append(s[i]);
+        }
+        return sb.toString();
+    }
+}
