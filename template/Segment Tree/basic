@@ -1,0 +1,75 @@
+// LeetCode 307. Range Sum Query - Mutable
+class NumArray {
+    class SegTreeNode {
+        SegTreeNode left;
+        SegTreeNode right;
+        int start, end;
+        int info;
+        SegTreeNode(int a, int b) {
+            this.left = null;
+            this.right = null;
+            this.start = a;
+            this.end = b;
+            this.info = 0;
+        }
+    }
+    int[] nums;
+    SegTreeNode root;
+    public void init(SegTreeNode node, int a, int b) {
+        if (a == b) {
+            node.info = nums[a];
+            return;
+        }
+        int mid = (a + b) / 2;
+        node.left = new SegTreeNode(a, mid);
+        node.right = new SegTreeNode(mid + 1, b);
+        init(node.left, a, mid);
+        init(node.right, mid + 1, b);
+        node.info = node.left.info + node.right.info;
+    }
+    
+    public void updateSingle(SegTreeNode node, int idx, int val) {
+        if (idx < node.start || idx > node.end) {
+            return;
+        }
+        if (node.start == node.end) {
+            node.info = val;
+            return;
+        }
+        updateSingle(node.left, idx, val);
+        updateSingle(node.right, idx, val);
+        node.info = node.left.info + node.right.info;
+    }
+    
+    public int QueryRange(SegTreeNode node, int a, int b) {
+        if (b < node.start || a > node.end) {
+            return 0;
+        }
+        if (a <= node.start && node.end <= b) {
+            return node.info;
+        }
+        return QueryRange(node.left, a, b) + QueryRange(node.right, a, b);
+    }
+
+    public NumArray(int[] nums) {
+        this.nums = nums;
+        int n = nums.length;
+        root = new SegTreeNode(0, n - 1);
+        init(root, 0, n - 1);
+    }
+    
+    public void update(int index, int val) {
+        updateSingle(root, index, val);
+    }
+    
+    public int sumRange(int left, int right) {
+        return QueryRange(root, left, right);
+    }
+}
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray obj = new NumArray(nums);
+ * obj.update(index,val);
+ * int param_2 = obj.sumRange(left,right);
+ */
