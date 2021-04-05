@@ -27,7 +27,7 @@ class Solution {
         node.right = new SegTreeNode(mid + 1, b);
         init(node.left, a, mid);
         init(node.right, mid + 1, b);
-        node.info = 0;
+        node.info = node.left.info + node.right.info;
     }
 
     public void updateRange(SegTreeNode node, int a, int b, int val) {
