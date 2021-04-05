@@ -1,0 +1,81 @@
+// LC 370. Range Addition
+class Solution {
+    class SegTreeNode {
+        SegTreeNode left;
+        SegTreeNode right;
+        int start, end;
+        int info;
+        int tag;
+        SegTreeNode(int a, int b) {
+            this.left = null;
+            this.right = null;
+            this.start = a;
+            this.end = b;
+            this.info = 0;
+            this.tag = 0;
+        }
+    }
+    int[] nums;
+    SegTreeNode root;
+    public void init(SegTreeNode node, int a, int b) {
+        if (a == b) {
+            node.info = 0;
+            return;
+        }
+        int mid = (a + b) / 2;
+        node.left = new SegTreeNode(a, mid);
+        node.right = new SegTreeNode(mid + 1, b);
+        init(node.left, a, mid);
+        init(node.right, mid + 1, b);
+        node.info = 0;
+    }
+
+    public void updateRange(SegTreeNode node, int a, int b, int val) {
+        if (b < node.start || a > node.end) {
+            return;
+        }
+        if (a <= node.start && node.end <= b) {
+            node.info += val * (node.end - node.start + 1);
+            node.tag += val;
+            return;
+        }
+        pushdown(node); // erase lazy tag and propagate down
+        updateRange(node.left, a, b, val);
+        updateRange(node.right, a, b, val);
+        node.info = node.left.info + node.right.info;
+    }
+
+    public void pushdown(SegTreeNode node) {
+        if (node.tag != 0) {
+            node.left.tag += node.tag;
+            node.right.tag += node.tag;
+            node.left.info += node.tag * (node.left.end - node.left.start + 1);
+            node.right.info += node.tag * (node.right.end - node.right.start + 1);
+            node.tag = 0;
+        }
+    }
+    
+    public int queryRange(SegTreeNode node, int a, int b) {
+        if (b < node.start || a > node.end) {
+            return 0;
+        }
+        if (a <= node.start && node.end <= b) {
+            return node.info;
+        }
+        pushdown(node);
+        return queryRange(node.left, a, b) + queryRange(node.right, a, b);
+    }
+
+    public int[] getModifiedArray(int length, int[][] updates) {
+        SegTreeNode root = new SegTreeNode(0, length - 1);
+        init(root, 0, length - 1);
+        for (int[] update : updates) {
+            updateRange(root, update[0], update[1], update[2]);
+        }
+        int[] rets = new int[length];
+        for (int i = 0; i < length; i++) {
+            rets[i] = queryRange(root, i, i);
+        }
+        return rets;
+    }
+}
