@@ -15,6 +15,12 @@ private class UnionFind {
             }
             return x;
         }
+        /*public int find(int x) {
+            if (x != parent[x]) {                                
+                parent[x] = find(parent[x]);
+            }
+            return parent[x];
+        }*/
         public void union(int x, int y) {
             int rootX = find(x);
             int rootY = find(y);
