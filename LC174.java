@@ -39,9 +39,9 @@ i = m - 1 j = n - 1
 dp[m - 1][n - 1] = 1 - dungeon[m - 1][n - 1]
 
 1. [energy at i, j] + dungeon[i][j] >= min(dp[i + 1][j], dp[i][j + 1])
-2. [energy at i, j] + dungeon[i][j] >= 1
+2. [energy at i, j] >= 1
 
-[energy at i, j] >= max(1, min(dp[i + 1][j], dp[i][j + 1])) - dungeon[i][j]
+[energy at i, j] >= max(1, min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j])
 
 dp[i][j] = max(1, min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j])
 
