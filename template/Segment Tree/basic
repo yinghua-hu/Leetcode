@@ -41,14 +41,14 @@ class NumArray {
         node.info = node.left.info + node.right.info;
     }
     
-    public int QueryRange(SegTreeNode node, int a, int b) {
+    public int queryRange(SegTreeNode node, int a, int b) {
         if (b < node.start || a > node.end) {
             return 0;
         }
         if (a <= node.start && node.end <= b) {
             return node.info;
         }
-        return QueryRange(node.left, a, b) + QueryRange(node.right, a, b);
+        return queryRange(node.left, a, b) + queryRange(node.right, a, b);
     }
 
     public NumArray(int[] nums) {
@@ -63,7 +63,7 @@ class NumArray {
     }
     
     public int sumRange(int left, int right) {
-        return QueryRange(root, left, right);
+        return queryRange(root, left, right);
     }
 }
 
