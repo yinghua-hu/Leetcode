@@ -17,6 +17,9 @@ class FenwickTree {
             }
             return sum;
         }
+        public int sumRange(int i, int j) {
+            return query(j) - query(i - 1);
+        }
         public int lowbit(int x) {
             return x & (-x);
         }
