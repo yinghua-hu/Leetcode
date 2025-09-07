@@ -1,0 +1,19 @@
+ public class Video implements Comparable<Video> {
+        private String name;
+        private int count;
+
+        public Video(String name, int count) {
+            this.name = name;
+            this.count = count;
+        }
+        
+        @Override
+        public int compareTo(Video other) {
+            if (this.count != other.count) {
+                return this.count - other.count;
+            }
+            else {
+                return this.name.compareTo(other.name);
+            }            
+        }
+    }
